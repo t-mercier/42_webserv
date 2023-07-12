@@ -1,17 +1,10 @@
 #include "HTTPServer.hpp"
-#include <sys/poll.h>
+#include "sys/socket.h"
 
 HTTPServer::HTTPServer(){};
 
-void run() {
-  while (true) {
-    int ready_descriptors = poll();
-    if (ready_descriptors < 0) {
-      //... handle error
-    } else if (ready_descriptors == 0) {
-      //... handle timeout
-    } else {
-      //... handle ready descriptors
-    }
-  }
+void HTTPServer::accept() {
+  int c = socket(AF_INET, SOCK_STREAM, 0);
+  if (c < 0)
+    throw "aaaaaa";
 }

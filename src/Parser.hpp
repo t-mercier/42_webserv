@@ -3,9 +3,16 @@
 #include <istream>
 #include <vector>
 
+enum TOKEN {
+  NONE,
+  KEY,
+  SEMI = ';',
+  LB = '{',
+  RB = '}',
+};
 
 class AST {
- public: 
+public:
   std::vector<AST> value;
   std::string key;
 };
@@ -28,4 +35,3 @@ public:
 private:
   std::istream &stream;
 };
-
