@@ -1,5 +1,10 @@
 #include "Config.hpp"
-#include "webserv.hpp"
+#include "HTTPServer.hpp"
 #include <iostream>
 
-int main() { std::cout << ("Hello, world!") << std::endl; }
+
+int main() {
+  HTTPServer server;
+  server.run();
+  return 0;
+}
