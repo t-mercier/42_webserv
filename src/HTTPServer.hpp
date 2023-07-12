@@ -5,7 +5,10 @@ class HTTPServer {
 public:
   HTTPServer();
   void run();
-  void accept();
+  void loop();
+  void create();
+  void handle(int);
 
 private:
+  int sock;
 };

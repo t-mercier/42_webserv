@@ -1,10 +1,8 @@
-BIN			=		webserv
+NAME		=		webserv
 SRC			=		src
-
-SRCS		=		main.cpp
-
-OBJS 		= 		$(addprefix out/,$(SRCS:.cpp=.o))
-
+OUT 		= 		out
+SRCS		=		$(wildcard $(SRC)/*.cpp)
+OBJS 		= 		$(patsubst $(SRC)/%.cpp, $(OUT)/%.o, $(SRCS))
 CXXFLAGS 	+= 		-std=c++98
 LFLAGS		+=		-lm
 
@@ -13,16 +11,15 @@ LFLAGS		+=		-lm
 # else
 # CXXFLAGS    +=		-g -fsanitize=address
 # endif
+$(shell mkdir -p $(OUT))
 
-$(shell mkdir -p out)
+all: $(NAME)
+	@printf "$(GREEN)$(NAME) ✓\n$(RESET)"
 
-all: $(BIN)
-	@printf "$(GREEN)$(BIN) ✓\n$(RESET)"
-
-$(BIN): $(OBJS)
+$(NAME): $(OBJS)
 	@$(CXX) $(CXXFLAGS) -o $@ $^ $(LFLAGS)
 
-out/%.o: $(SRC)/%.cpp $(SRC)/webserv.hpp
+$(OUT)/%.o: $(SRC)/%.cpp 
 	@printf "$(GREEN)Compiling: $(RESET)$*.c\n"
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
@@ -30,7 +27,7 @@ clean:
 	rm -rf $(OBJS)
 
 fclean: clean
-	rm -rf $(BIN)
+	rm -rf $(NAME)
 
 re: fclean all
 
