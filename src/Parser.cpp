@@ -1,8 +1,11 @@
 #include "Parser.hpp"
+#include <algorithm>
+#include <iostream>
+#include <istream>
 
+Token::Token() : id(TOKEN::NONE), value(""){};
 
-Token::Token() : id(NONE), value(""){};
-Token::Token(int _id, std::string _v) : id(_id), value(_v){};
+Token::Token(TOKEN _id, std::string _v) : id(_id), value(_v){};
 
 Token Parser::getToken() {
   std::string key;
@@ -10,35 +13,51 @@ Token Parser::getToken() {
   while (stream >> c && std::isspace(c))
     ;
   do {
-    switch (c) {
-    case SEMI:
-    case LB:
-    case RB:
-      return (Token(c, std::string(1, c)));
+    if (!(stream >> c))
+      return Token(TOKEN::EF, "");
+    TOKEN token;
+switch (c) {
+    case ';':
+        token = SEMI;
+        break;
+    case '{':
+        token = LB;
+        break;
+    case '}':
+        token = RB;
+        break;
     default:
-      key.push_back(c);
-    }
-  } while (stream >> c && !std::isspace(c));
-  if (key.length())
-    return (Token(KEY, key));
+        token = KEY;
+}
+  } while (!std::isspace(c));
+  debug();
   return Token();
 }
-
-
 
 AST Parser::parse() {
   Token tk;
   AST ast;
-  while ((tk = getToken()).id) {
-    {
-      if (tk.id == KEY) {
-        ast.key = tk.value;
-        continue;
-      }
-      // if (tk.id == RB) {
-      //   while (parse())
-      //     if (tk.id != LB)
-      //       break;
+  std::vector<AST> leaves;
+
+  while ((tk = getToken()).id != EF) {
+    debugkey(tk.value);
+
+    if (tk.id == KEY) {
+      ast.value = tk.value;
+      leaves.push_back(ast);
+      continue;
     }
   }
+  ast.leaves = leaves;
+  std::cout << ast;
+  return ast;
+}
+
+Parser::Parser(std::istream &s) : stream(s){};
+
+std::ostream &operator<<(std::ostream &stream, const AST &ast) {
+  stream << std::endl;
+  // while (ast.leaves.size())
+  stream << "name=" << ast.value;
+  stream << " | " << std::endl;
 }

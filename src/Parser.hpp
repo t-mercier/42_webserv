@@ -1,7 +1,9 @@
 #pragma once
 #include "Config.hpp"
 #include <istream>
+#include <iostream>
 #include <vector>
+#include <cstdio>
 
 enum TOKEN {
   NONE,
@@ -9,19 +11,20 @@ enum TOKEN {
   SEMI = ';',
   LB = '{',
   RB = '}',
+  EF,
 };
 
 class AST {
 public:
-  std::vector<AST> value;
-  std::string key;
+  std::vector<AST> leaves;
+  std::string value;
 };
 
 class Token {
 public:
   Token();
-  Token(int token, std::string);
-  int id;
+  Token(TOKEN token, std::string);
+  TOKEN id;
   std::string value;
 };
 
@@ -35,3 +38,7 @@ public:
 private:
   std::istream &stream;
 };
+
+std::ostream &operator<<(std::ostream &, const AST &);
+void debugkey(std::string);
+void debug();
