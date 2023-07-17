@@ -1,4 +1,5 @@
 #include "HTTPServer.hpp"
+#include "HTTPRequest.hpp"
 #include <arpa/inet.h>
 #include <cstring>
 #include <fstream>
@@ -18,12 +19,17 @@ void HTTPServer::create() {
   if (sock < 0)
     throw "socket";
   struct sockaddr_in addr;
+  short port = 8080;
   addr.sin_family = AF_INET;
   addr.sin_addr.s_addr = htonl(INADDR_ANY);
-  addr.sin_port = htons(8080);
+  addr.sin_port = htons(port);
 
-  if (bind(sock, (struct sockaddr *)&addr, sizeof(addr)))
-    throw "bind";
+  while (bind(sock, (struct sockaddr *)&addr, sizeof(addr))) {
+    addr.sin_port = htons(++port);
+  }
+
+  printf("bind localhost:%d\n", port);
+
   loop();
 }
 
@@ -60,17 +66,19 @@ const char response[] = "HTTP/1.1 200 OK\r\n"
 #define AL(x) (sizeof(x) / sizeof(x[0]))
 void HTTPServer::handle(int csock) {
   std::string line;
-  std::string req;
+  std::string rs;
   static char buf[BUFFER_SIZE];
   std::cout << "handling " << csock << std::endl;
   while (read(csock, buf, BUFFER_SIZE) > 0) {
-    req.append(buf);
-    if (req.find("\r\n\r\n"))
+    rs.append(buf);
+    if (rs.find("\r\n\r\n"))
       break;
   }
 
+  HTTPRequest req(rs);
+
   std::cout << req << std::endl;
-  send(csock, response, strlen(response), 0);
+  write(csock, response, strlen(response));
   close(csock);
 }
 
