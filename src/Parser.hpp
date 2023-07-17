@@ -1,9 +1,9 @@
 #pragma once
 #include "Config.hpp"
-#include <istream>
-#include <iostream>
-#include <vector>
 #include <cstdio>
+#include <iostream>
+#include <istream>
+#include <vector>
 
 enum TOKEN {
   NONE,
@@ -11,13 +11,14 @@ enum TOKEN {
   SEMI = ';',
   LB = '{',
   RB = '}',
-  EF,
 };
 
 class AST {
 public:
-  std::vector<AST> leaves;
-  std::string value;
+  std::vector<AST> branch;
+  std::string leaf;
+  
+  friend std::ostream &operator<<(std::ostream &, const AST &);
 };
 
 class Token {
@@ -35,10 +36,10 @@ public:
   Token getToken();
   AST parse();
 
+
 private:
   std::istream &stream;
 };
 
-std::ostream &operator<<(std::ostream &, const AST &);
 void debugkey(std::string);
 void debug();

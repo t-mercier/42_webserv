@@ -8,12 +8,13 @@
 void debug() { std::cout << "TRIGGER | " << std::endl; }
 
 void debugkey(std::string s) {
-  std::cout << s << " | ";
+  std::cout << s << std::endl;
   }
 
 int main() {
   std::fstream f("config.conf");
   Parser p(f);
   p.parse();
+  
   return 0;
 }

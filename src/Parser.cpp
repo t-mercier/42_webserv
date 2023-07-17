@@ -1,5 +1,7 @@
 #include "Parser.hpp"
+#include <_ctype.h>
 #include <algorithm>
+#include <cctype>
 #include <iostream>
 #include <istream>
 
@@ -10,54 +12,64 @@ Token::Token(TOKEN _id, std::string _v) : id(_id), value(_v){};
 Token Parser::getToken() {
   std::string key;
   char c;
-  while (stream >> c && std::isspace(c))
-    ;
-  do {
-    if (!(stream >> c))
-      return Token(TOKEN::EF, "");
-    TOKEN token;
-switch (c) {
-    case ';':
-        token = SEMI;
-        break;
-    case '{':
-        token = LB;
-        break;
-    case '}':
-        token = RB;
-        break;
-    default:
-        token = KEY;
-}
-  } while (!std::isspace(c));
-  debug();
+  int sp = 0;
+  stream >> std::ws;
+  while (stream.good() && !std::isspace(stream.peek())) {
+    stream >> c;
+    switch (c) {
+    case SEMI:
+    case LB:
+    case RB:
+
+      return (Token((TOKEN)c, std::string(1, c)));
+      // Token(KEY, key);
+      //   return (Token(KEY, key));
+    default: {
+      key.push_back(c);
+    }
+    }
+  }
+  if (key.length())
+    return (Token(KEY, key));
   return Token();
 }
 
 AST Parser::parse() {
   Token tk;
   AST ast;
-  std::vector<AST> leaves;
+  std::vector<AST> branch;
 
-  while ((tk = getToken()).id != EF) {
-    debugkey(tk.value);
-
-    if (tk.id == KEY) {
-      ast.value = tk.value;
-      leaves.push_back(ast);
-      continue;
+  while ((tk = getToken()).id != NONE) {
+    switch (tk.id) {
+    case NONE:
+      break;
+    case LB: {
+      while ((tk = getToken()).id != LB) {
+          parse();
+        if (tk.id == SEMI)
+          break;
+      }
+    }
+    case SEMI:
+      
+    case RB:
+      parse();
+    case KEY: {
+      ast.leaf = tk.value;
+      branch.push_back(ast);
+      debugkey(tk.value);
+      break;
+    }
     }
   }
-  ast.leaves = leaves;
-  std::cout << ast;
+  ast.branch = branch;
   return ast;
 }
 
 Parser::Parser(std::istream &s) : stream(s){};
 
-std::ostream &operator<<(std::ostream &stream, const AST &ast) {
-  stream << std::endl;
-  // while (ast.leaves.size())
-  stream << "name=" << ast.value;
-  stream << " | " << std::endl;
+std::ostream &operator<<(std::ostream &o, const AST &rhs) {
+  o << std::endl;
+  o << "  |__ name= " << rhs.leaf << std::endl;
 }
+
