@@ -2,9 +2,7 @@
 #include "HTTPRequest.hpp"
 #include <arpa/inet.h>
 #include <cstring>
-#include <fstream>
 #include <iostream>
-#include <istream>
 #include <netinet/in.h>
 #include <string>
 #include <sys/socket.h>
@@ -59,7 +57,7 @@ const char response[] = "HTTP/1.1 200 OK\r\n"
                         "    <title>Example Page</title>\r\n"
                         "</head>\r\n"
                         "<body>\r\n"
-                        "    <h1>Hello, Dicks!</h1>\r\n"
+                        "    <h1>Hello, WORLD!</h1>\r\n"
                         "    <p>This is an example page.</p>\r\n"
                         "</body>\r\n"
                         "</html>\r\n";
@@ -82,4 +80,10 @@ void HTTPServer::handle(int csock) {
   close(csock);
 }
 
-void HTTPServer::run() { create(); }
+void HTTPServer::run() {
+  try {
+    create();
+  } catch (char *s) {
+    std::cout << s << std::endl;
+  }
+}
