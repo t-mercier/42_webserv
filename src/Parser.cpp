@@ -45,21 +45,19 @@ AST Parser::parse() {
       break;
     case LB: {
       while ((tk = getToken()).id != LB) {
-          parse();
+        parse();
         if (tk.id == SEMI)
           break;
       }
     }
     case SEMI:
-      
     case RB:
       parse();
-    case KEY: {
+    case KEY:
       ast.leaf = tk.value;
       branch.push_back(ast);
       debugkey(tk.value);
       break;
-    }
     }
   }
   ast.branch = branch;
@@ -72,4 +70,3 @@ std::ostream &operator<<(std::ostream &o, const AST &rhs) {
   o << std::endl;
   o << "  |__ name= " << rhs.leaf << std::endl;
 }
-

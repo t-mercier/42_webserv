@@ -17,7 +17,7 @@ class AST {
 public:
   std::vector<AST> branch;
   std::string leaf;
-  
+
   friend std::ostream &operator<<(std::ostream &, const AST &);
 };
 
@@ -35,7 +35,6 @@ public:
   Parser(std::istream &);
   Token getToken();
   AST parse();
-
 
 private:
   std::istream &stream;
