@@ -1,18 +1,22 @@
 #include "HTTPServer.hpp"
-#include "HTTPRequest.hpp"
+
 #include <arpa/inet.h>
-#include <cstring>
-#include <iostream>
 #include <netinet/in.h>
-#include <string>
 #include <sys/socket.h>
 #include <unistd.h>
+
+#include <cstring>
+#include <iostream>
+#include <string>
+
+#include "HTTPRequest.hpp"
 
 #define BUFFER_SIZE 1024
 
 HTTPServer::HTTPServer(){};
 
-void HTTPServer::create() {
+void
+HTTPServer::create() {
   sock = socket(AF_INET, SOCK_STREAM, 0);
   if (sock < 0)
     throw "socket";
@@ -22,7 +26,7 @@ void HTTPServer::create() {
   addr.sin_addr.s_addr = htonl(INADDR_ANY);
   addr.sin_port = htons(port);
 
-  while (bind(sock, (struct sockaddr *)&addr, sizeof(addr))) {
+  while (bind(sock, (struct sockaddr*)&addr, sizeof(addr))) {
     addr.sin_port = htons(++port);
   }
 
@@ -31,15 +35,15 @@ void HTTPServer::create() {
   loop();
 }
 
-void HTTPServer::loop() {
-
+void
+HTTPServer::loop() {
   if (listen(sock, 10) < 0)
     throw "listen";
 
   struct sockaddr_in addr;
   socklen_t addrL = sizeof(addr);
   while (1) {
-    int csock = accept(sock, (struct sockaddr *)&addr, &addrL);
+    int csock = accept(sock, (struct sockaddr*)&addr, &addrL);
     if (csock < 0)
       throw "accept";
 
@@ -61,8 +65,11 @@ const char response[] = "HTTP/1.1 200 OK\r\n"
                         "    <p>This is an example page.</p>\r\n"
                         "</body>\r\n"
                         "</html>\r\n";
+
 #define AL(x) (sizeof(x) / sizeof(x[0]))
-void HTTPServer::handle(int csock) {
+
+void
+HTTPServer::handle(int csock) {
   std::string line;
   std::string rs;
   static char buf[BUFFER_SIZE];
@@ -80,10 +87,11 @@ void HTTPServer::handle(int csock) {
   close(csock);
 }
 
-void HTTPServer::run() {
+void
+HTTPServer::run() {
   try {
     create();
-  } catch (char *s) {
+  } catch (char* s) {
     std::cout << s << std::endl;
   }
 }
