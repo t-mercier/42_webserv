@@ -2,9 +2,9 @@
 #include <cctype>
 #include <string>
 
-Config &
-Config::from (std::istream &s) {
-  Config *c = new Config ();
+Config&
+Config::from(std::istream& s) {
+  Config* c = new Config();
 
   return *c;
 }

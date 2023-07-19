@@ -1,9 +1,5 @@
-
----
 Language: Cpp
-BasedOnStyle: GNU
-
-
+BasedOnStyle: Mozilla
 BreakBeforeBraces: Custom
 BraceWrapping:   
   AfterFunction: false
