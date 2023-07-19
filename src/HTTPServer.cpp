@@ -13,41 +13,41 @@
 
 #define BUFFER_SIZE 1024
 
-HTTPServer::HTTPServer(){};
+HTTPServer::HTTPServer (){};
 
 void
-HTTPServer::create() {
-  sock = socket(AF_INET, SOCK_STREAM, 0);
+HTTPServer::create () {
+  sock = socket (AF_INET, SOCK_STREAM, 0);
   if (sock < 0)
     throw "socket";
   struct sockaddr_in addr;
   short port = 8080;
   addr.sin_family = AF_INET;
-  addr.sin_addr.s_addr = htonl(INADDR_ANY);
-  addr.sin_port = htons(port);
+  addr.sin_addr.s_addr = htonl (INADDR_ANY);
+  addr.sin_port = htons (port);
 
-  while (bind(sock, (struct sockaddr*)&addr, sizeof(addr))) {
-    addr.sin_port = htons(++port);
+  while (bind (sock, (struct sockaddr *)&addr, sizeof (addr))) {
+    addr.sin_port = htons (++port);
   }
 
-  printf("bind localhost:%d\n", port);
+  printf ("bind localhost:%d\n", port);
 
-  loop();
+  loop ();
 }
 
 void
-HTTPServer::loop() {
-  if (listen(sock, 10) < 0)
+HTTPServer::loop () {
+  if (listen (sock, 10) < 0)
     throw "listen";
 
   struct sockaddr_in addr;
-  socklen_t addrL = sizeof(addr);
+  socklen_t addrL = sizeof (addr);
   while (1) {
-    int csock = accept(sock, (struct sockaddr*)&addr, &addrL);
+    int csock = accept (sock, (struct sockaddr *)&addr, &addrL);
     if (csock < 0)
       throw "accept";
 
-    handle(csock);
+    handle (csock);
   }
 }
 
@@ -66,32 +66,32 @@ const char response[] = "HTTP/1.1 200 OK\r\n"
                         "</body>\r\n"
                         "</html>\r\n";
 
-#define AL(x) (sizeof(x) / sizeof(x[0]))
+#define AL(x) (sizeof (x) / sizeof (x[0]))
 
 void
-HTTPServer::handle(int csock) {
+HTTPServer::handle (int csock) {
   std::string line;
   std::string rs;
   static char buf[BUFFER_SIZE];
   std::cout << "handling " << csock << std::endl;
-  while (read(csock, buf, BUFFER_SIZE) > 0) {
-    rs.append(buf);
-    if (rs.find("\r\n\r\n"))
+  while (read (csock, buf, BUFFER_SIZE) > 0) {
+    rs.append (buf);
+    if (rs.find ("\r\n\r\n"))
       break;
   }
 
-  HTTPRequest req(rs);
+  HTTPRequest req (rs);
 
   std::cout << req << std::endl;
-  write(csock, response, strlen(response));
-  close(csock);
+  write (csock, response, strlen (response));
+  close (csock);
 }
 
 void
-HTTPServer::run() {
+HTTPServer::run () {
   try {
-    create();
-  } catch (char* s) {
+    create ();
+  } catch (char *s) {
     std::cout << s << std::endl;
   }
 }

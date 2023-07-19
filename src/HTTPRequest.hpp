@@ -4,7 +4,7 @@
 
 class HTTPRequest {
 public:
-  HTTPRequest(std::string const &);
+  HTTPRequest (std::string const &);
   std::string method;
   std::string path;
   std::string version;
@@ -12,10 +12,10 @@ public:
   std::string body;
 
 private:
-  void parse(char *);
-  char *parse_mpv(char *);
-  char *parse_header(char *);
-  char *parse_body(char *);
+  void parse (char *);
+  char *parse_mpv (char *);
+  char *parse_header (char *);
+  char *parse_body (char *);
 };
 
-std::ostream &operator<<(std::ostream &, const HTTPRequest &);
+std::ostream &operator<< (std::ostream &, const HTTPRequest &);

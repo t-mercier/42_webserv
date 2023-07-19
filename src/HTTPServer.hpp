@@ -3,11 +3,11 @@
 
 class HTTPServer {
 public:
-  HTTPServer();
-  void run();
-  void loop();
-  void create();
-  void handle(int);
+  HTTPServer ();
+  void run ();
+  void loop ();
+  void create ();
+  void handle (int);
 
 private:
   int sock;
