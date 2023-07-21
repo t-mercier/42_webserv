@@ -3,7 +3,7 @@ SRC			=		src
 OUT 		= 		out
 SRCS		=		$(wildcard $(SRC)/*.cpp)
 OBJS 		= 		$(patsubst $(SRC)/%.cpp, $(OUT)/%.o, $(SRCS))
-CXXFLAGS 	+= 		-std=c++98
+CXXFLAGS 	+= 		-std=c++11
 LFLAGS		+=		-lm
 
 # ifndef DEV

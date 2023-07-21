@@ -5,69 +5,106 @@
 #include <iostream>
 #include <istream>
 
-Token::Token () : id (TOKEN::NONE), value (""){};
+/*_____________________________ constructors _____________________________*/
 
-Token::Token (TOKEN _id, std::string _v) : id (_id), value (_v){};
+Token::Token()
+  : id(TOKEN::NONE)
+  , value(""){};
+
+Token::Token(TOKEN _id, std::string _v)
+  : id(_id)
+  , value(_v){};
+
+/*______________________________ destructor ______________________________*/
+
+/*_______________________________ overloads ______________________________*/
+
+std::ostream&
+operator<<(std::ostream& o, AST const& rhs) {
+  o << rhs.value << ' ';
+  return o;
+}
+
+/*_______________________________ accessors ______________________________*/
+
+std::string
+AST::getLeaf() {
+  return value;
+}
+
+/*________________________________ methods _______________________________*/
 
 Token
-Parser::getToken () {
+Parser::getToken() {
   std::string key;
   char c;
-  int sp = 0;
+  char b;
   stream >> std::ws;
-  while (stream.good () && !std::isspace (stream.peek ())) {
-    stream >> c;
-    switch (c) {
-    case SEMI:
-    case LB:
-    case RB:
-
-      return (Token ((TOKEN)c, std::string (1, c)));
-    default: {
-      key.push_back (c);
-    }
+  while (stream.good() && !std::isspace(stream.peek())) {
+    switch (stream.peek()) {
+      case SEMI:
+        return (stream >> c, Token((TOKEN)c, std::string(1, c)));
+      case LB:
+      case RB:
+        return (stream >> c, Token((TOKEN)c, std::string(1, c)));
+      default:
+        stream >> c;
+        key.push_back(c);
+        if (stream.peek() == ';' && key.length())
+          return (Token(KEY, key));
     }
   }
-  if (key.length ())
-    return (Token (KEY, key));
-  return Token ();
+  if (key.length())
+    return (Token(KEY, key));
+  return Token();
 }
 
 AST
-Parser::parse () {
-  Token tk;
-  AST ast;
-  std::vector<AST> branch;
+Parser::parse() {
+  Token u;
+  AST a, ast;
+    std::vector<AST> v;
+  //   std::vector<AST> branch;
 
-  while ((tk = getToken ()).id != NONE) {
-    switch (tk.id) {
-    case NONE:
-      break;
-    case LB: {
-      while ((tk = getToken ()).id != LB) {
-        parse ();
-        if (tk.id == SEMI)
-          break;
-      }
-    }
-    case SEMI:
-    case RB:
-      parse ();
-    case KEY:
-      ast.leaf = tk.value;
-      branch.push_back (ast);
-      debugkey (tk.value);
-      break;
-    }
+  while ((u = getToken()).id != NONE) {
+    switch (u.id) {
+      case NONE:
+      case RB:
+        break;
+      case LB:
+      case SEMI: // ignore semicolons, key-value pair already saved
+        a = parse();
+        break;
+      case KEY:
+        a.value = u.value;
+        a.branch.push_back(a);
+        // v.push_back(a);
+        break;
+    }   
+    a.branch.push_back(a);
+    // std::cout << ast << ' ';
+    std::cout << a << ' ';
   }
-  ast.branch = branch;
-  return ast;
+//   b.branch.push_back(branch);
+  //   branch.push_back(b);
+  return a;
 }
 
-Parser::Parser (std::istream &s) : stream (s){};
+void
+AST::print() {
+  static int level = 0;
 
-std::ostream &
-operator<< (std::ostream &o, const AST &rhs) {
-  o << std::endl;
-  o << "  |__ name= " << rhs.leaf << std::endl;
+  //   for (const auto& val : branch)
+  for (int i = 0; i < branch.size(); i++) {
+    // std::cout << leaf << ' ';
+    // if (leaf == "{" & level++)
+    //   std::cout << "|__ ";
+    // if (leaf == ";")
+    //   std::cout << std::endl;
+    // std::cout << leaf << std::string(level * 3, ' ');
+    // std::cout << std::endl;
+  }
 }
+
+Parser::Parser(std::istream& s)
+  : stream(s){};

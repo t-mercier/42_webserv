@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <iostream>
 #include <istream>
+#include <ostream>
 #include <vector>
 
 enum TOKEN {
@@ -16,29 +17,32 @@ enum TOKEN {
 class AST {
 public:
   std::vector<AST> branch;
-  std::string leaf;
+  std::string value;
 
-  friend std::ostream &operator<< (std::ostream &, const AST &);
+  std::string getLeaf();
+  friend std::ostream& operator<<(std::ostream&, const AST&);
+  void print();
 };
 
 class Token {
 public:
-  Token ();
-  Token (TOKEN token, std::string);
+  Token();
+  Token(TOKEN token, std::string);
   TOKEN id;
   std::string value;
 };
 
 class Parser {
 public:
-  Parser ();
-  Parser (std::istream &);
-  Token getToken ();
-  AST parse ();
+  Parser();
+  Parser(std::istream&);
+  Token getToken();
+  AST parse();
 
 private:
-  std::istream &stream;
+  std::istream& stream;
 };
 
-void debugkey (std::string);
-void debug ();
+void debugkey(std::string);
+void
+debug();
