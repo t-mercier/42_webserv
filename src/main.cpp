@@ -8,7 +8,7 @@
 #include <istream>
 
 void
-debug () {
+debug() {
   std::cout << "TRIGGER | " << std::endl;
 }
 
@@ -42,12 +42,13 @@ main() {
           res.end();
         })
     .run();
-
-int
-main () {
-  std::fstream f ("config.conf");
-  Parser p (f);
-  AST a = p.parse();
-  a.print ();
-  return 0;
 }
+
+// int
+// main() {
+//   std::fstream f("config.conf");
+//   Parser p(f);
+//   AST a = p.parse();
+//   a.print();
+//   return 0;
+// }
