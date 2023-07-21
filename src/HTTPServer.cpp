@@ -10,6 +10,7 @@
 #include <string>
 
 #include "HTTPRequest.hpp"
+#include "HTTPResponse.hpp"
 
 #define BUFFER_SIZE 1024
 
@@ -26,7 +27,7 @@ HTTPServer::create() {
   addr.sin_addr.s_addr = htonl(INADDR_ANY);
   addr.sin_port = htons(port);
 
-  while (bind(sock, (struct sockaddr*)&addr, sizeof(addr))) {
+  while (::bind(sock, (struct sockaddr*)&addr, sizeof(addr))) {
     addr.sin_port = htons(++port);
   }
 
@@ -47,7 +48,7 @@ HTTPServer::loop() {
     if (csock < 0)
       throw "accept";
 
-    handle(csock);
+    handleS(csock);
   }
 }
 
@@ -69,7 +70,7 @@ const char response[] = "HTTP/1.1 200 OK\r\n"
 #define AL(x) (sizeof(x) / sizeof(x[0]))
 
 void
-HTTPServer::handle(int csock) {
+HTTPServer::handleS(int csock) {
   std::string line;
   std::string rs;
   static char buf[BUFFER_SIZE];
@@ -79,12 +80,22 @@ HTTPServer::handle(int csock) {
     if (rs.find("\r\n\r\n"))
       break;
   }
-
+  std::cout << rs << std::endl;
   HTTPRequest req(rs);
 
   std::cout << req << std::endl;
-  write(csock, response, strlen(response));
-  close(csock);
+
+  HTTPResponse res(csock);
+
+  std::map<std::string, f_handler>::const_iterator it;
+  for (it = handlers.begin(); it != handlers.end(); it++) {
+    std::cout << it->first << "==" << req.path << "|" << std::endl;
+    if (it->first == req.path)
+      it->second(req, res);
+  }
+
+  // write (csock, response, strlen (response));
+  // close (csock);
 }
 
 void
@@ -94,4 +105,10 @@ HTTPServer::run() {
   } catch (char* s) {
     std::cout << s << std::endl;
   }
+}
+
+HTTPServer&
+HTTPServer::on(std::string const& path, f_handler f) {
+  handlers[path] = f;
+  return *this;
 }

@@ -4,5 +4,5 @@
 
 class Config {
 public:
-  static Config &from(std::istream &s);
+  static Config& from(std::istream& s);
 };
