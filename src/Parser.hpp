@@ -1,10 +1,10 @@
 #pragma once
-#include "Config.hpp"
 #include <cstdio>
 #include <iostream>
 #include <istream>
 #include <ostream>
 #include <vector>
+#include "Config.hpp"
 
 enum TOKEN {
   NONE,
@@ -15,17 +15,19 @@ enum TOKEN {
 };
 
 class AST {
-public:
-  std::vector<AST> branch;
-  std::string value;
+ public:
+  AST();
 
-  std::string getLeaf();
-  friend std::ostream& operator<<(std::ostream&, const AST&);
-  void print();
+  std::vector<AST> branch;
+  std::string leaf;
+
+  void print() const;
+  void printHelper(int) const;
+//   friend std::ostream& operator<<(std::ostream&, const AST&);
 };
 
 class Token {
-public:
+ public:
   Token();
   Token(TOKEN token, std::string);
   TOKEN id;
@@ -33,16 +35,16 @@ public:
 };
 
 class Parser {
-public:
-  Parser();
+ public:
   Parser(std::istream&);
+
   Token getToken();
   AST parse();
 
-private:
+ private:
   std::istream& stream;
+  AST ast;
 };
 
 void debugkey(std::string);
-void
-debug();
+void debug();

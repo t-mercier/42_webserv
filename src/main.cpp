@@ -22,26 +22,31 @@ main() {
 
   std::fstream f("config.conf");
   Parser p(f);
-  // p.parse ();
+  Token u;
 
-  HTTPServer server;
+  AST a;
+  a = p.parse();
+  a.print();
+//   p.buildTree();
 
-  server
-    .on("/",
-        [](HTTPRequest const& req, HTTPResponse& res) {
-          res.header("testheader", "hihi");
-          res.header("Content-Type", "text/html");
-          res.body() << "<html><h1>Hello World</h1></html>\n";
-          res.end();
-        })
-    .on("/hey",
-        [](HTTPRequest const& req, HTTPResponse& res) {
-          res.header("testheader", "hey header");
-          res.header("Content-Type", "text/html");
-          res.body() << "<html><h1>this is the /hey path</h1></html>\n";
-          res.end();
-        })
-    .run();
+//   HTTPServer server;
+
+//   server
+//     .on("/",
+//         [](HTTPRequest const& req, HTTPResponse& res) {
+//           res.header("testheader", "hihi");
+//           res.header("Content-Type", "text/html");
+//           res.body() << "<html><h1>Hello World</h1></html>\n";
+//           res.end();
+//         })
+//     .on("/hey",
+//         [](HTTPRequest const& req, HTTPResponse& res) {
+//           res.header("testheader", "hey header");
+//           res.header("Content-Type", "text/html");
+//           res.body() << "<html><h1>this is the /hey path</h1></html>\n";
+//           res.end();
+//         })
+//     .run();
 }
 
 // int
@@ -49,6 +54,5 @@ main() {
 //   std::fstream f("config.conf");
 //   Parser p(f);
 //   AST a = p.parse();
-//   a.print();
 //   return 0;
 // }

@@ -4,38 +4,37 @@
 #include <cctype>
 #include <iostream>
 #include <istream>
+#include <iterator>
 
 /*_____________________________ constructors _____________________________*/
 
-Token::Token()
-  : id(TOKEN::NONE)
-  , value(""){};
+Token::Token() : id(TOKEN::NONE), value(""){};
 
-Token::Token(TOKEN _id, std::string _v)
-  : id(_id)
-  , value(_v){};
+Token::Token(TOKEN _id, std::string _v) : id(_id), value(_v){};
+
+AST::AST() : branch(0), leaf(""){};
 
 /*______________________________ destructor ______________________________*/
 
 /*_______________________________ overloads ______________________________*/
 
-std::ostream&
-operator<<(std::ostream& o, AST const& rhs) {
-  o << rhs.value << ' ';
-  return o;
-}
+// std::ostream& operator<<(std::ostream& o, AST& rhs) {
+//   std::string indent(rhs.level * 2, ' ');
+//   //   for (const auto& rhs : rhs.branch)
+//   if (!rhs.leaf.empty())
+//     o << indent << "|__ " << ' ' << rhs.leaf << std::endl;
+//   return o;
+// }
 
 /*_______________________________ accessors ______________________________*/
 
-std::string
-AST::getLeaf() {
-  return value;
-}
+// std::string Parser::getLeaf() {
+//   return leaf;
+// }
 
 /*________________________________ methods _______________________________*/
 
-Token
-Parser::getToken() {
+Token Parser::getToken() {
   std::string key;
   char c;
   char b;
@@ -45,6 +44,7 @@ Parser::getToken() {
       case SEMI:
         return (stream >> c, Token((TOKEN)c, std::string(1, c)));
       case LB:
+        return (stream >> c, Token((TOKEN)c, std::string(1, c)));
       case RB:
         return (stream >> c, Token((TOKEN)c, std::string(1, c)));
       default:
@@ -59,52 +59,52 @@ Parser::getToken() {
   return Token();
 }
 
-AST
-Parser::parse() {
+AST Parser::parse() {
   Token u;
-  AST a, ast;
-    std::vector<AST> v;
-  //   std::vector<AST> branch;
+  AST root, a, b;
 
   while ((u = getToken()).id != NONE) {
     switch (u.id) {
       case NONE:
-      case RB:
         break;
       case LB:
-      case SEMI: // ignore semicolons, key-value pair already saved
-        a = parse();
+        a.branch.push_back(parse());
+        root.branch.push_back(a);
+        a = AST();
         break;
-      case KEY:
-        a.value = u.value;
-        a.branch.push_back(a);
-        // v.push_back(a);
+      case SEMI:
+        root.branch.push_back(a);
+        a = AST();
         break;
-    }   
-    a.branch.push_back(a);
-    // std::cout << ast << ' ';
-    std::cout << a << ' ';
+      case RB:
+        return root;
+      case KEY: {
+        if (a.leaf.empty()) {
+          a.leaf = u.value;
+        } else {
+          AST b;
+          b.leaf = u.value;
+          a.branch.push_back(b);
+        }
+        break;
+      }
+      default:
+        break;
+    }
   }
-//   b.branch.push_back(branch);
-  //   branch.push_back(b);
-  return a;
+  return root;
 }
 
-void
-AST::print() {
-  static int level = 0;
-
-  //   for (const auto& val : branch)
-  for (int i = 0; i < branch.size(); i++) {
-    // std::cout << leaf << ' ';
-    // if (leaf == "{" & level++)
-    //   std::cout << "|__ ";
-    // if (leaf == ";")
-    //   std::cout << std::endl;
-    // std::cout << leaf << std::string(level * 3, ' ');
-    // std::cout << std::endl;
-  }
+void AST::print() const {
+  printHelper(0);
 }
 
-Parser::Parser(std::istream& s)
-  : stream(s){};
+void AST::printHelper(int level) const {
+  std::string indent(level * 2, ' ');
+  if (leaf != "")
+    std::cout << indent << "|__ " << ' ' << leaf << std::endl;
+  for (const auto& b : branch)
+    b.printHelper(level + 1);
+}
+
+Parser::Parser(std::istream& s) : stream(s){};
