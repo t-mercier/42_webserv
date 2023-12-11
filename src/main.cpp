@@ -1,58 +1,48 @@
 #include "Config.hpp"
-#include "HTTPRequest.hpp"
-#include "HTTPResponse.hpp"
-#include "HTTPServer.hpp"
-#include "Parser.hpp"
+#include "Request.hpp"
+#include "Response.hpp"
+#include "Server.hpp"
+#include <arpa/inet.h>
+#include <cstdint>
+#include <cstdio>
+#include <fcntl.h>
 #include <fstream>
-#include <iostream>
-#include <istream>
-
-void
-debug() {
-  std::cout << "TRIGGER | " << std::endl;
-}
-
-void
-debugkey(std::string s) {
-  std::cout << s << std::endl;
-}
+#include <sys/poll.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <variant>
+#include <vector>
 
 int
-main() {
+main(int ac, char** av) {
+  //   s.create("localhost", 80)
+  //     .on("/",
+  //         [](Request const& req, Response& res) {
+  //           std::string path = "public/";
+  //           Server::servefiles(req, res, path);
+  //         })
+  //     .on("/503", [](Request const& req, Response& res) {
+  //     Server::errorpage(req, res, 503); });
+  //   s.run();
 
-  std::fstream f("config.conf");
-  Parser p(f);
-  Token u;
+  if (ac != 2) return 1;
+  std::fstream f(av[1]);
 
-  AST a;
-  a = p.parse();
-  a.print();
-//   p.buildTree();
+  // int main() {
+  // std::ifstream f("config.conf");
+  Config c(f);
 
-//   HTTPServer server;
+  Server s(c);
+  s.run();
 
-//   server
-//     .on("/",
-//         [](HTTPRequest const& req, HTTPResponse& res) {
-//           res.header("testheader", "hihi");
-//           res.header("Content-Type", "text/html");
-//           res.body() << "<html><h1>Hello World</h1></html>\n";
-//           res.end();
-//         })
-//     .on("/hey",
-//         [](HTTPRequest const& req, HTTPResponse& res) {
-//           res.header("testheader", "hey header");
-//           res.header("Content-Type", "text/html");
-//           res.body() << "<html><h1>this is the /hey path</h1></html>\n";
-//           res.end();
-//         })
-//     .run();
+  // Eventer ev;
+  // ev.on<int>(
+  //   "ev", [](Event<int>& ev) { std::cout << " 1 " << ev.data << std::endl;
+  //   });
+  // ev.on<int>(
+  //   "ev", [](Event<int>& ev) { std::cout << " 2 " << ev.data << std::endl;
+  //   });
+  // int v = 20;
+  // ev.emit<int>("ev", v);
+  // test23();
 }
-
-// int
-// main() {
-//   std::fstream f("config.conf");
-//   Parser p(f);
-//   AST a = p.parse();
-//   return 0;
-// }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <h1>Hello World !!!!</h1>
+    <audio src="test.ogg" controls></audio>
+    <h2>Number add</h2>
+    <form action="cgi/add.py" method="POST">
+        <fieldset>
+            <legend>Enter two numbers to add</legend>
+            <label>First Number: <input type="number" name="num1" /></label><br />
+            <label>Second Number: <input type="number" name="num2" /></label><br />
+        </fieldset>
+        <button>Add</button>
+    </form>
+    <h2>File upload</h2>
+    <form action="cgi/upload.py" method="post" enctype="multipart/form-data">
+        <label for="file">Choose a file:</label>
+        <input type="file" name="file" id="file" />
+        <input type="submit" value="Upload" />
+    </form>
+    <form action="cgi/loop.py" method="post"><input type="submit" value="check loop cgi"></form>
+    <div class="col">
+        <a href="e.html">funny page</a>
+        <a href="files/">files/</a>
+        <a href="/redir">redirect</a>
+        <a href="/uploads/">UPLOADS/</a>
+        <a href="cgi/test.php?x=2&y=22222">php cgi</a>
+        <a href="cgi/error.py"> cgi error</a>
+        <br>
+        <a href="darkindex.html">Dark Mode</a>
+    </div>
+    <style>
+        .col {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+
+
+</body>
+<script>
+    function numberToHexColor(num) {
+        num = Math.floor(Math.max(0, Math.min(num, 0xFFFFFF)));
+        let hex = num.toString(16).padStart(6, '0');
+        return '#' + hex;
+    }
+    document.querySelectorAll('h1').forEach(v => {
+        setInterval(() => {
+            v.style.color = numberToHexColor(Math.random() * 0xFFFFFF)
+        }, 500)
+    })
+</script>
+
+</html>

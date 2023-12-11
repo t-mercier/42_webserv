@@ -3,21 +3,30 @@ SRC			=		src
 OUT 		= 		out
 SRCS		=		$(wildcard $(SRC)/*.cpp)
 OBJS 		= 		$(patsubst $(SRC)/%.cpp, $(OUT)/%.o, $(SRCS))
-CXXFLAGS 	+= 		-std=c++11
+CXXFLAGS 	+= 		-std=c++17
 LFLAGS		+=		-lm
 
-# ifndef DEV
-# CXXFLAGS	+=		-Ofast -Wall -Wextra -Werror 
-# else
-# CXXFLAGS    +=		-g -fsanitize=address
-# endif
+OS := $(shell uname -s)
+
+ifndef DEV
+CXXFLAGS	+=		-Ofast -Wextra -Wall -Wextra
+else
+CXXFLAGS    +=		
+endif
+
+ifeq ($(OS),Linux)
+CFLAGS 		+= 		-DLINUX
+endif
+
 $(shell mkdir -p $(OUT))
 
 all: $(NAME)
-	@printf "$(GREEN)$(NAME) ✓\n$(RESET)"
+
+run: $(NAME)
+	./webserv public/configfile.conf 
 
 $(NAME): $(OBJS)
-	@$(CXX) $(CXXFLAGS) -o $@ $^ $(LFLAGS)
+	@$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LFLAGS)
 
 $(OUT)/%.o: $(SRC)/%.cpp 
 	@printf "$(GREEN)Compiling: $(RESET)$*.c\n"
