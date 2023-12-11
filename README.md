@@ -40,16 +40,3 @@
 
 This project is part of an educational initiative. Contributions and feedback are welcome, adhering to the project's standards.
 
-## Requirements
-
-- C++ 98 compliant compiler.
-- No external or Boost libraries allowed.
-- For MacOS, use `fcntl(fd, F_SETFL, O_NONBLOCK)` for non-blocking mode.
-
-## Installation and Usage
-
-1. Clone the repository.
-2. Use the provided Makefile to compile the source: `make`.
-3. Run the server: `./webserv [configuration file]`.
-
-## Configuration
