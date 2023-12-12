@@ -7,7 +7,7 @@
 ## Team
 
 - **Timothée**: Focused on the parsing for the configuration aspect of the server.
-- **Alfa**: Handled request and response processing.
+- [**Alfa**](https://github.com/0alfa): Handled request and response processing.
 
 ## Features
 
@@ -22,7 +22,7 @@
 
 ## Installation
 
-1. Clone the repository: `https://git.devo.pw/alfa/webserv.git`
+1. Clone the repository
 2. Compile the source with `make`.
 3. Run the server with our basic confi file `make run` or `./webserv [configuration file]`.
 
